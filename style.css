@@ -1,0 +1,52 @@
+  :root {
+    --tileSize:5.5rem;
+  }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: 0;
+  }
+  html {
+    height:100%;
+    font-size: 20px;
+  }
+  body {
+    width: 100%;
+    min-height:100vh;
+    display:flex;
+    flex-direction: column;
+    gap: 30px;
+
+  }
+
+  .gameDetailWindow {
+    display:flex;
+    height: 30%;
+    justify-content: space-evenly;
+  }
+  .playerHeader {
+    font-size:5rem;
+  }
+  .interactableUI {
+    display:grid;
+    justify-items: center;
+    font-size:2rem;
+  }
+
+  .gameWindow {
+    height: 70%;
+    display:flex;
+    justify-content: center;
+  }
+  .boardRow {
+    display:flex;
+  }
+  .tile {
+    width:var(--tileSize);
+    height:var(--tileSize);
+    font-size:var(--tileSize);
+    border:1px solid black;
+    display:flex;
+    justify-content: center;
+    align-content: center;
+  }
