@@ -1,16 +1,26 @@
-const TicTacToeGame= () => {
-  const board = [];
-  const setBoard = () => {
-    for (let i = 0; i < 3; i += 1) {
-      board[i][0] = 0;
-      board[i][1] = 0;
-      board[i][2] = 0;
-    }
-  };
+const gameboard = (() => {
+  const board = new Array(3).fill(new Array(3).fill(0));
+
   const flipTile = (playercode, row, col) => {
     if (playercode === 1)board[row][col] = 1;
   };
-  return { flipTile };
-};
+  const getTable = () => board;
+  return { flipTile, getTable };
+})();
 
-const aGame = TicTacToeGame();
+const displayController = (() => {
+
+  return {};
+})();
+
+
+const Player = (playerid) => {
+  const chooseTile = (playerid, col, row) =>{
+    gameboard.flipTile(playerid, col, row);
+  };
+  return { playerid };
+};
+gameboard.getTable();
+
+
+
