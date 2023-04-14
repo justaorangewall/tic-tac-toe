@@ -1,40 +1,70 @@
-function randomXO() {
-  const tileContent = Math.random() < 0.5;
-  return tileContent ? 'X' : 'O';
-}
 const gameboard = (() => {
   let board = [
     [0, 0, 0],
     [0, 0, 0],
     [0, 0, 0],
   ];
-  let currentTurn = 1;
+  let curTurn = 1;
+  let winPlayer = 0;
   const flipTile = (playercode, row, col) => {
     if (board[row][col] === 0)board[row][col] = playercode;
   };
-  const getTable = () => board;
 
+  const gTab = () => board;
+  const getTurn = () => curTurn;
+  const setTurn = (num) => { curTurn = num; };
+  const getWinStatus = () => winPlayer;
   const clearTable = () => {
     board = new Array(3).fill(new Array(3).fill(0));
   };
 
   const flipTurn = () => {
-    if (currentTurn === 1) currentTurn = 2;
-    else if (currentTurn === 2) currentTurn = 1;
+    if (getWinStatus() === 0) {
+      if (curTurn === 1) setTurn(2);
+      else if (curTurn === 2) setTurn(1);
+    }
   };
-  const getTurn = () => currentTurn;
+  const checkWin = () => {
+    if (getWinStatus() === 0) {
+      // check horizontal-line Win
+      gTab().forEach((r) => {
+        if (r[0] === getTurn() && r[1] === getTurn() && r[2] === getTurn()) winPlayer = getTurn();
+      });
+
+      // check vertical Win
+      for (let i = 0; i < 3; i += 1) {
+        if (gTab()[0][i] === getTurn() && gTab()[1][i] === getTurn() && gTab()[2][i] ===getTurn()) {
+          winPlayer = getTurn();
+        }
+      }
+
+      // check diagonal line
+      if (gTab()[0][0] === getTurn() && gTab()[1][1] === getTurn() && gTab()[2][2] === getTurn()) {
+        winPlayer = getTurn();
+      }
+
+      if (gTab()[0][2] === getTurn() && gTab()[1][1] === getTurn() && gTab()[2][0] === getTurn()) {
+        winPlayer = getTurn();
+      }
+      if (winPlayer !== 0) {
+        console.log("YOU WIN");
+        const result = document.querySelector('.gameResult');
+        result.textContent = `Congratulation ${player1.getName()}, YOU won!`;
+      }
+    }
+  };
   return {
-    flipTile, getTable, clearTable, flipTurn, getTurn,
+    flipTile, gTab, clearTable, flipTurn, getTurn, checkWin, getWinStatus,
   };
 })();
 
 const displayController = (() => {
   const addTileEvent = () => {
     const tileList = document.querySelectorAll('.tile');
+
     tileList.forEach((tile) => {
-      if (tile.dataset.playerClaimed !== 0) {
-        tile.addEventListener('click', (event) => {
-          // eslint-disable-next-line no-param-reassign
+      tile.addEventListener('click', (event) => {
+        if (gameboard.getWinStatus() === 0) { // eslint-disable-next-line no-param-reassign
           event.target.dataset.playerowned = gameboard.getTurn();
           event.target.classList.add('claimed');
           const tileRow = event.target.dataset.row;
@@ -42,9 +72,10 @@ const displayController = (() => {
           gameboard.flipTile(gameboard.getTurn(), tileRow, tileCol);
           // eslint-disable-next-line no-param-reassign
           event.target.textContent = (gameboard.getTurn() === 1) ? 'X' : 'O';
+          gameboard.checkWin();
           gameboard.flipTurn();
-        }, { once: true });
-      }
+        }
+      }, { once: true });
     });
   };
 
@@ -75,9 +106,18 @@ const displayController = (() => {
   return { drawBoard };
 })();
 
-const Player = (name, playerid) => ({ playerid, name });
+const Player = (name, playerid) => {
+  let pName = name;
+  const pID = playerid;
 
-gameboard.getTable();
+  const setName = (input) => { pName = input; };
+  const getName = () => pName;
+
+  const getpID = () => pID;
+  return { getName, setName, getpID };
+};
+
+gameboard.gTab();
 displayController.drawBoard();
 const player1 = Player('P1', 1);
 const player2 = Player('P2', 2);
