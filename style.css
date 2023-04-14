@@ -25,14 +25,26 @@
     justify-content: space-evenly;
   }
   .playerHeader {
+    display:flex;
+    align-items: center;
     font-size:5rem;
   }
   .interactableUI {
     display:grid;
     justify-items: center;
     font-size:2rem;
+    gap:20px;
   }
-
+  
+  .userNameSelection {
+    display:grid;
+    justify-items: center;
+    font-size: 1.5rem;
+    gap:10px;
+  }
+  .userNameSelection input, .userNameSelection button {
+    width:40%;
+  }
   .gameWindow {
     height: 70%;
     display:flex;

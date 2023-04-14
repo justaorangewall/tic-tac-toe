@@ -4,17 +4,18 @@ const gameboard = (() => {
     [0, 0, 0],
     [0, 0, 0],
   ];
-  let curTurn = 1;
+  let whoTurn = 1;
   let winPlayer = 0;
+  let curTurn = 1;
   const flipTile = (playercode, row, col) => {
     if (board[row][col] === 0)board[row][col] = playercode;
   };
 
   const gTab = () => board;
-  const getTurn = () => curTurn;
+  const getwhoTurn = () => whoTurn;
   const getWinStatus = () => winPlayer;
 
-  const setTurn = (num) => { curTurn = num; };
+  const setTurn = (num) => { whoTurn = num; };
   const resetWin = () => { winPlayer = 0; };
   const setTable = () => {
     board = [
@@ -30,46 +31,57 @@ const gameboard = (() => {
     resetWin(0);
   };
 
-  const flipTurn = () => {
+  const flipPlayerTurn = () => {
     if (getWinStatus() === 0) {
-      if (curTurn === 1) setTurn(2);
-      else if (curTurn === 2) setTurn(1);
+      curTurn+=1;
+      if (whoTurn === 1) setTurn(2);
+      else if (whoTurn === 2) setTurn(1);
     }
   };
   const checkWin = () => {
-    let winFlag = false;
+    let gameOver = false;
     if (getWinStatus() === 0) {
       // check horizontal-line Win
       gTab().forEach((r) => {
-        if (r[0] === getTurn() && r[1] === getTurn() && r[2] === getTurn()) {
-          winPlayer = getTurn();
-          winFlag = true;
+        if (r[0] === getwhoTurn() && r[1] === getwhoTurn() && r[2] === getwhoTurn()) {
+          winPlayer = getwhoTurn();
+          gameOver = true;
         }
       });
 
       // check vertical Win
       for (let i = 0; i < 3; i += 1) {
-        if (gTab()[0][i] === getTurn() && gTab()[1][i] === getTurn() && gTab()[2][i] ===getTurn()) {
-          winPlayer = getTurn();
-          winFlag = true;
+        if (gTab()[0][i] === getwhoTurn()
+        && gTab()[1][i] === getwhoTurn()
+        && gTab()[2][i] === getwhoTurn()) {
+          winPlayer = getwhoTurn();
+          gameOver = true;
         }
       }
 
       // check diagonal line
-      if (gTab()[0][0] === getTurn() && gTab()[1][1] === getTurn() && gTab()[2][2] === getTurn()) {
-        winPlayer = getTurn();
-        winFlag = true;
+      if (gTab()[0][0] === getwhoTurn()
+      && gTab()[1][1] === getwhoTurn()
+      && gTab()[2][2] === getwhoTurn()) {
+        winPlayer = getwhoTurn();
+        gameOver = true;
       }
 
-      if (gTab()[0][2] === getTurn() && gTab()[1][1] === getTurn() && gTab()[2][0] === getTurn()) {
-        winPlayer = getTurn();
-        winFlag = true;
+      if (gTab()[0][2] === getwhoTurn()
+      && gTab()[1][1] === getwhoTurn()
+      && gTab()[2][0] === getwhoTurn()) {
+        winPlayer = getwhoTurn();
+        gameOver = true;
+      }
+      if (curTurn === 9) {
+        winPlayer = 3;
+        gameOver = true;
       }
     }
-    return winFlag;
+    return gameOver;
   };
   return {
-    flipTile, gTab, clearTable, flipTurn, getTurn, checkWin, getWinStatus,
+    flipTile, gTab, clearTable, flipPlayerTurn, getwhoTurn, checkWin, getWinStatus,
   };
 })();
 
@@ -82,18 +94,19 @@ const displayController = (() => {
         if (gameboard.getWinStatus() === 0) { // check if game is already over
           if (event.target.classList.contains('claimed') === false) {
           // eslint-disable-next-line no-param-reassign
-            event.target.dataset.playerowned = gameboard.getTurn();
+            event.target.dataset.playerowned = gameboard.getwhoTurn();
             event.target.classList.add('claimed');
             const tileRow = event.target.dataset.row;
             const tileCol = event.target.dataset.column;
             // eslint-disable-next-line no-param-reassign
-            event.target.textContent = (gameboard.getTurn() === 1) ? 'X' : 'O';
-            gameboard.flipTile(gameboard.getTurn(), tileRow, tileCol);
+            event.target.textContent = (gameboard.getwhoTurn() === 1) ? 'X' : 'O';
+            gameboard.flipTile(gameboard.getwhoTurn(), tileRow, tileCol);
             if (gameboard.checkWin() === true) {
               if (gameboard.getWinStatus() === 1) document.querySelector('body > div.gameResult').textContent = `${player1.getName()} has won`;
               else if (gameboard.getWinStatus() === 2) document.querySelector('body > div.gameResult').textContent = `${player2.getName()} has won`;
+              else if (gameboard.getWinStatus() === 3) document.querySelector('body > div.gameResult').textContent = 'The game is TIE!';
             }
-            gameboard.flipTurn();
+            gameboard.flipPlayerTurn();
           }
         }
       });
