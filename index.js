@@ -73,7 +73,7 @@ const gameboard = (() => {
         winPlayer = getwhoTurn();
         gameOver = true;
       }
-      if (curTurn === 9) {
+      if (curTurn === 9 && gameOver === false) {
         winPlayer = 3;
         gameOver = true;
       }
@@ -167,4 +167,11 @@ document.querySelector('.newGameBtn').addEventListener('click', () => {
   gameboard.clearTable();
   displayController.resetTable();
   console.log(gameboard.getWinStatus());
+});
+
+document.querySelector('#changeName').addEventListener('click', (event) => {
+  const names = document.querySelectorAll('.playername');
+  document.querySelector('#player1').textContent = names[0].value;
+  document.querySelector('#player2').textContent = names[1].value;
+  event.preventDefault();
 });

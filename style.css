@@ -22,12 +22,15 @@
   .gameDetailWindow {
     display:flex;
     height: 30%;
-    justify-content: space-evenly;
+    justify-content: space-between;
   }
   .playerHeader {
+    flex:1;
     display:flex;
     align-items: center;
-    font-size:5rem;
+    font-size:4rem;
+    justify-items: center;
+    justify-content: center;
   }
   .interactableUI {
     display:grid;
