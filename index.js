@@ -29,6 +29,7 @@ const gameboard = (() => {
     setTable();
     setTurn(1);
     resetWin(0);
+    curTurn = 0;
   };
 
   const flipPlayerTurn = () => {
@@ -107,6 +108,10 @@ const displayController = (() => {
               else if (gameboard.getWinStatus() === 3) document.querySelector('body > div.gameResult').textContent = 'The game is TIE!';
             }
             gameboard.flipPlayerTurn();
+            if (gameboard.getWinStatus() === 0) {
+              const turnIndicator = document.querySelector('.whoTurn');
+              turnIndicator.textContent = (turnIndicator.textContent === 'P1\'s Turn') ? 'P2\'s Turn' : 'P1\'s Turn';
+            }
           }
         }
       });
